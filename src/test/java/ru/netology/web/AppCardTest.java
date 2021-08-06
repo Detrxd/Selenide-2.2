@@ -1,12 +1,10 @@
 package ru.netology.web;
 
-
-//import org.checkerframework.checker.units.qual.A;
-
 import org.junit.jupiter.api.AfterEach;
-import org.openqa.selenium.Keys;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 
 
 import java.time.Duration;
@@ -24,6 +22,7 @@ public class AppCardTest {
     @BeforeEach
     void setUp() {
         open("http://localhost:9999/");
+        $("[data-test-id='date']").$("[class='input__control']").sendKeys(Keys.chord(Keys.CONTROL + "A", Keys.DELETE));
     }
 
     @AfterEach
@@ -183,6 +182,30 @@ public class AppCardTest {
                 shouldHave(exactText("Доставка в выбранный город недоступна"));
     }
 
+    @Test
+    void selectFromCityList() {
+        $("[data-test-id='city']").$("[placeholder='Город']").setValue("Ас");
+        $("[class=\"menu-item__control\"]").find(String.valueOf(exactText("Астрахань")));
+        $("[data-test-id='date']").$("[placeholder='Дата встречи']").setValue(formatDeliveryDate(3));
+        $("[data-test-id='name']").$("[name='name']").setValue("Филимонов Илья");
+        $("[data-test-id='phone']").$("[name='phone']").setValue("+79163273696");
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Забронировать")).click();
+        $("[data-test-id='city'].input_invalid .input__sub").shouldBe(visible).
+                shouldHave(exactText("Доставка в выбранный город недоступна"));
+    }
+
+    @Test
+    void fewValueForMeeting() {
+        $("[data-test-id='city']").$("[placeholder='Город']").setValue("Астрахань");
+        $("[data-test-id='date']").$("[class='input__control']").setValue(formatDeliveryDate(1));
+        $("[data-test-id='name']").$("[name='name']").setValue("Филимонов Илья");
+        $("[data-test-id='phone']").$("[name='phone']").setValue("+79163273696");
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Забронировать")).click();
+        $("[data-test-id='date'] .input__sub").shouldBe(visible)
+                .shouldHave(exactText("Заказ на выбранную дату невозможен"));
+    }
 }
 
 
