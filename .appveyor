@@ -12,4 +12,4 @@ install:
     - java -jar ./artifacts/app-card-delivery.jar &  chmod +x gradlew
 
 build_script:
-  - ./gradlew test --info
+  - ./gradlew test -Dselenide.headless=true --info
