@@ -206,6 +206,19 @@ public class AppCardTest {
         $("[data-test-id='date'] .input__sub").shouldBe(visible)
                 .shouldHave(exactText("Заказ на выбранную дату невозможен"));
     }
+
+    @Test
+    void choseNextMonthForMeeting() {
+        $("[data-test-id='city']").$("[placeholder='Город']").setValue("Ас");
+        $$("[class='menu-item__control']").find(exactText("Астрахань")).click();
+        $("[data-test-id='date']").$("[placeholder='Дата встречи']").setValue(formatDeliveryDate(40));
+        $("[data-test-id='name']").$("[name='name']").setValue("Филимонов Илья");
+        $("[data-test-id='phone']").$("[name='phone']").setValue("+79163273696");
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Забронировать")).click();
+        $("[data-test-id='notification']").shouldBe(visible, Duration.ofSeconds(15)).
+                shouldHave(exactText("Успешно!\n" + "Встреча успешно забронирована на " + formatDeliveryDate(40)));
+    }
 }
 
 
